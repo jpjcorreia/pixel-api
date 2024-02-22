@@ -1,0 +1,29 @@
+﻿version: '3.9'
+
+services:
+  pixelservice:
+    image: pixelservice
+    build:
+      context: .
+      dockerfile: PixelApi/Dockerfile
+    container_name: pixelservice
+    ports:
+      - "80:80"
+    depends_on:
+      - rabbitmq
+
+  storageservice:
+    image: storageservice
+    build:
+      context: .
+      dockerfile: StorageService/Dockerfile
+    container_name: storageservice
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: masstransit/rabbitmq
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # AMQP protocol port
+      - "15672:15672" # Management interface port

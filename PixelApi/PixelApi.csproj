@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' "/>
+    <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' "/>
+    <ItemGroup>
+        <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="8.0.0"/>
+        <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1"/>
+        <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.0-develop.1682"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Domain\HttpRequestLogNotification.cs"/>
+        <Compile Remove="Domain\Notification.cs"/>
+        <Compile Remove="Domain\HttpRequestCreated.cs"/>
+        <Compile Remove="Domain\**"/>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Common\Common.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Remove="Domain\**"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Content Remove="Domain\**"/>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <None Remove="Domain\**"/>
+    </ItemGroup>
+</Project>
