@@ -9,8 +9,10 @@ public class HttpRequestCreatedConsumer : IConsumer<HttpRequestCreated>
     private readonly ILogger<HttpRequestCreatedConsumer> _logger;
     private readonly IStorageService<HttpRequestCreated> _storageService;
 
-    public HttpRequestCreatedConsumer(ILogger<HttpRequestCreatedConsumer> logger,
-        IStorageService<HttpRequestCreated> storageService)
+    public HttpRequestCreatedConsumer(
+        ILogger<HttpRequestCreatedConsumer> logger,
+        IStorageService<HttpRequestCreated> storageService
+    )
     {
         _logger = logger;
         _storageService = storageService;
@@ -24,7 +26,10 @@ public class HttpRequestCreatedConsumer : IConsumer<HttpRequestCreated>
     /// <exception cref="ArgumentNullException">Thrown when context is null.</exception>
     public async Task Consume(ConsumeContext<HttpRequestCreated> context)
     {
-        _logger.LogDebug("Consuming HttpRequestCreated with ID: {HttpRequestId}", context.Message.Id);
+        _logger.LogDebug(
+            "Consuming HttpRequestCreated with ID: {HttpRequestId}",
+            context.Message.Id
+        );
 
         try
         {
@@ -32,7 +37,11 @@ public class HttpRequestCreatedConsumer : IConsumer<HttpRequestCreated>
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error storing HttpRequestCreated with ID: {HttpRequestId}", context.Message.Id);
+            _logger.LogError(
+                ex,
+                "Error storing HttpRequestCreated with ID: {HttpRequestId}",
+                context.Message.Id
+            );
             // Improve this later to handling the error appropriately (e.g., re-queue the message, move to an error queue, etc.)
         }
     }

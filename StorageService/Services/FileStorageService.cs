@@ -24,8 +24,14 @@ public class FileStorageService : IStorageService<HttpRequestCreated>, IDisposab
         _logger = logger;
         _fileLogger = new LoggerConfiguration()
             .WriteTo.Async(
-                configure => configure.File(_filePath, rollingInterval: RollingInterval.Infinite,
-                    outputTemplate: "{Message}{NewLine}"), blockWhenFull: false)
+                configure =>
+                    configure.File(
+                        _filePath,
+                        rollingInterval: RollingInterval.Infinite,
+                        outputTemplate: "{Message}{NewLine}"
+                    ),
+                blockWhenFull: false
+            )
             .CreateLogger();
     }
 
@@ -43,18 +49,22 @@ public class FileStorageService : IStorageService<HttpRequestCreated>, IDisposab
     /// <exception cref="ArgumentException">Thrown when the IP address in the provided content is null or empty.</exception>
     public async Task StoreAsync(HttpRequestCreated content)
     {
-        if (content is null) throw new ArgumentNullException(nameof(content));
+        if (content is null)
+            throw new ArgumentNullException(nameof(content));
         if (string.IsNullOrWhiteSpace(content.IpAddress))
             throw new ArgumentException("Ip Address cannot be empty or null", nameof(content));
 
         string message = FormatContent(content);
         await Task.Run(() => _fileLogger.Information("{Message}", message));
-        _logger.LogInformation("Stored HTTP request {HttpRequestId} in file {FilePath}", content.Id, _filePath);
+        _logger.LogInformation(
+            "Stored HTTP request {HttpRequestId} in file {FilePath}",
+            content.Id,
+            _filePath
+        );
     }
 
     private static string FormatContent(HttpRequestCreated content)
     {
-        return
-            $"{content.CreatedAt:O}|{content.Referer ?? "null"}|{content.UserAgent ?? "null"}|{content.IpAddress ?? "null"}";
+        return $"{content.CreatedAt:O}|{content.Referer ?? "null"}|{content.UserAgent ?? "null"}|{content.IpAddress ?? "null"}";
     }
 }
