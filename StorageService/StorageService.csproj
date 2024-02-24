@@ -17,7 +17,6 @@
         </PackageReference>
         <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.0-develop.1682"/>
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.1"/>
-        <PackageReference Include="Serilog.Settings.AppSettings" Version="2.2.3-dev-00066"/>
         <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.1-dev-00572"/>
         <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0"/>
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00972"/>
