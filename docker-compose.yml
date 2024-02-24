@@ -5,7 +5,7 @@ services:
     image: pixelservice
     build:
       context: .
-      dockerfile: PixelApi/Dockerfile
+      dockerfile: src/PixelApi/Dockerfile
     container_name: pixelservice
     ports:
       - "8080:8080"
@@ -16,7 +16,7 @@ services:
     image: storageservice
     build:
       context: .
-      dockerfile: StorageService/Dockerfile
+      dockerfile: src/StorageService/Dockerfile
     container_name: storageservice
     depends_on:
       - rabbitmq

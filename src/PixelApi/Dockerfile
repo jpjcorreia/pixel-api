@@ -7,11 +7,11 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["PixelApi/PixelApi.csproj", "PixelApi/"]
-COPY ["Common/Common.csproj", "Common/"]
-RUN dotnet restore "PixelApi/PixelApi.csproj"
+COPY ["src/PixelApi/PixelApi.csproj", "src/PixelApi/"]
+COPY ["src/Common/Common.csproj", "src/Common/"]
+RUN dotnet restore "src/PixelApi/PixelApi.csproj"
 COPY . .
-WORKDIR "/src/PixelApi"
+WORKDIR "/src/src/PixelApi"
 RUN dotnet build "PixelApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
