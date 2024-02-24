@@ -1,6 +1,8 @@
-﻿using Common;
+﻿using System.Net;
+using Common;
 using MassTransit;
-using PixelApi.Extensions;
+using Microsoft.AspNetCore.Http.HttpResults;
+using PixelApi.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,23 +31,23 @@ builder
         )
     );
 
-var app = builder.Build();
+// Add logging and exception handling
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
-// Middleware to add the request date to the HttpContext
-app.UseHttpRequestDate();
+var app = builder.Build();
+app.UseExceptionHandler();
 
 app.MapGet(
-    "/Track",
-    async (HttpContext context, IPublishEndpoint endpoint, ILogger<Program> logger) =>
-    {
-        var trackingPixelData = Convert.FromBase64String(
-            "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
-        );
-
-        try
+        "/Track",
+        async (HttpContext context, IPublishEndpoint endpoint, ILogger<Program> logger) =>
         {
+            var trackingPixelData = Convert.FromBase64String(
+                "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+            );
+
             var referer = context.Request.GetTypedHeaders().Referer?.ToString();
-            var userAgent = context.Request.Headers["User-Agent"].FirstOrDefault();
+            var userAgent = context.Request.Headers.UserAgent.FirstOrDefault();
             var ipAddress = context.Connection.RemoteIpAddress?.MapToIPv4().ToString();
 
             logger.LogDebug(
@@ -71,12 +73,21 @@ app.MapGet(
 
             return Results.File(trackingPixelData, "image/gif");
         }
-        catch (Exception ex)
+    )
+    .AddEndpointFilter(
+        async (context, next) =>
         {
-            logger.LogError(ex, "Error processing track request");
-            return Results.File(trackingPixelData, "image/gif");
+            if (context.HttpContext.Connection.RemoteIpAddress is null)
+            {
+                return Results.Problem(
+                    "IP Address is required to track the request.",
+                    statusCode: StatusCodes.Status400BadRequest,
+                    title: "Bad Request"
+                );
+            }
+
+            return await next(context);
         }
-    }
-);
+    );
 
 await app.RunAsync();

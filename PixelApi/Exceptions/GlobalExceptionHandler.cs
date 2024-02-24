@@ -31,7 +31,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         var problemDetails = new ProblemDetails
         {
             Detail = exception.Message,
-            Status = (int)HttpStatusCode.InternalServerError,
+            Status = StatusCodes.Status500InternalServerError,
             Title = "Internal Server Error"
         };
 
@@ -49,7 +49,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         var problemDetails = new ProblemDetails
         {
             Detail = exception.Message,
-            Status = (int)HttpStatusCode.BadRequest,
+            Status = StatusCodes.Status400BadRequest,
             Title = "Bad request"
         };
         logger.LogWarning(
