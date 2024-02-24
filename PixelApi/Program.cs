@@ -48,13 +48,6 @@ app.MapGet(
             var userAgent = context.Request.Headers.UserAgent.FirstOrDefault();
             var ipAddress = context.Connection.RemoteIpAddress?.MapToIPv4().ToString();
 
-            logger.LogDebug(
-                "Tracking request received with Referer: {Referer}, User-Agent: {UserAgent}, IP Address: {IPAddress}",
-                referer,
-                userAgent,
-                ipAddress
-            );
-
             var requestCreatedEvent = new HttpRequestCreated(
                 referer,
                 userAgent,
@@ -62,6 +55,15 @@ app.MapGet(
                 Guid.NewGuid().ToString(),
                 DateTime.UtcNow
             );
+
+            logger.LogDebug(
+                "Tracking request received with Id: {Id}, Referer: {Referer}, User-Agent: {UserAgent}, IP Address: {IPAddress}",
+                requestCreatedEvent.Id,
+                requestCreatedEvent.Referer,
+                requestCreatedEvent.UserAgent,
+                requestCreatedEvent.IpAddress
+            );
+
             await endpoint.Publish(requestCreatedEvent);
 
             logger.LogInformation(
