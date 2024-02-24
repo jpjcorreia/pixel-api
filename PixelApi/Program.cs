@@ -1,7 +1,5 @@
-﻿using System.Net;
-using Common;
+﻿using Common;
 using MassTransit;
-using Microsoft.AspNetCore.Http.HttpResults;
 using PixelApi.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -78,13 +76,11 @@ app.MapGet(
         async (context, next) =>
         {
             if (context.HttpContext.Connection.RemoteIpAddress is null)
-            {
                 return Results.Problem(
                     "IP Address is required to track the request.",
                     statusCode: StatusCodes.Status400BadRequest,
                     title: "Bad Request"
                 );
-            }
 
             return await next(context);
         }

@@ -12,8 +12,8 @@
     <ItemGroup>
         <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="8.0.0"/>
         <PackageReference Include="CSharpier.MsBuild" Version="0.27.3">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1"/>
         <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.0-develop.1682"/>
@@ -23,7 +23,7 @@
         <Compile Remove="Domain\Notification.cs"/>
         <Compile Remove="Domain\HttpRequestCreated.cs"/>
         <Compile Remove="Domain\**"/>
-        <Compile Remove="Middlewares\HttpRequestDateTimeMiddleware.cs" />
+        <Compile Remove="Middlewares\HttpRequestDateTimeMiddleware.cs"/>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Common\Common.csproj"/>
@@ -34,7 +34,7 @@
     <ItemGroup>
         <Content Remove="Domain\**"/>
         <Content Include="..\.dockerignore">
-          <Link>.dockerignore</Link>
+            <Link>.dockerignore</Link>
         </Content>
     </ItemGroup>
     <ItemGroup>

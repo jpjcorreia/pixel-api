@@ -12,7 +12,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         CancellationToken cancellationToken
     )
     {
-        ProblemDetails problemDetails = exception switch
+        var problemDetails = exception switch
         {
             ArgumentException => HandleArgumentException(exception),
             _ => HandleGenericException(exception)
