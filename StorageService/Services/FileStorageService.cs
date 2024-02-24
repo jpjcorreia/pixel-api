@@ -54,7 +54,7 @@ public class FileStorageService : IStorageService<HttpRequestCreated>, IDisposab
         if (string.IsNullOrWhiteSpace(content.IpAddress))
             throw new ArgumentException("Ip Address cannot be empty or null", nameof(content));
 
-        string message = FormatContent(content);
+        var message = FormatContent(content);
         await Task.Run(() => _fileLogger.Information("{Message}", message));
         _logger.LogInformation(
             "Stored HTTP request {HttpRequestId} in file {FilePath}",

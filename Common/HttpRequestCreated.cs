@@ -5,4 +5,5 @@ public record HttpRequestCreated(
     string? UserAgent,
     string? IpAddress,
     string? Id,
-    DateTime? CreatedAt);
+    DateTime? CreatedAt
+);

@@ -11,9 +11,7 @@ builder.Services.AddMassTransit(config =>
     config.UsingRabbitMq(
         (context, cfg) =>
         {
-            string? rabbitMqConnectionString = builder.Configuration.GetConnectionString(
-                "RabbitMq"
-            );
+            var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
             cfg.Host(rabbitMqConnectionString);
             cfg.UseDelayedMessageScheduler();
             cfg.UseMessageRetry(retryConfig => retryConfig.Interval(3, TimeSpan.FromSeconds(3)));
@@ -40,15 +38,15 @@ app.MapGet(
     "/Track",
     async (HttpContext context, IPublishEndpoint endpoint, ILogger<Program> logger) =>
     {
-        byte[] trackingPixelData = Convert.FromBase64String(
+        var trackingPixelData = Convert.FromBase64String(
             "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
         );
 
         try
         {
-            string? referer = context.Request.GetTypedHeaders().Referer?.ToString();
-            string? userAgent = context.Request.Headers["User-Agent"].FirstOrDefault();
-            string? ipAddress = context.Connection.RemoteIpAddress?.MapToIPv4().ToString();
+            var referer = context.Request.GetTypedHeaders().Referer?.ToString();
+            var userAgent = context.Request.Headers["User-Agent"].FirstOrDefault();
+            var ipAddress = context.Connection.RemoteIpAddress?.MapToIPv4().ToString();
 
             logger.LogDebug(
                 "Tracking request received with Referer: {Referer}, User-Agent: {UserAgent}, IP Address: {IPAddress}",

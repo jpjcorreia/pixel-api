@@ -33,7 +33,7 @@ builder.Services.AddSingleton<IStorageService<HttpRequestCreated>, FileStorageSe
     {
         var logger = serviceProvider.GetRequiredService<ILogger<FileStorageService>>();
         var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-        string? storagePath = configuration.GetValue<string>("Storage:File:Path");
+        var storagePath = configuration.GetValue<string>("Storage:File:Path");
         return new FileStorageService(storagePath, logger);
     }
 );
