@@ -24,11 +24,11 @@
         <ProjectReference Include="..\Common\Common.csproj"/>
     </ItemGroup>
     <ItemGroup>
-        <Content Include="..\.dockerignore">
-            <Link>.dockerignore</Link>
-        </Content>
+        <Compile Remove="Services\MassTransitService.cs"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Remove="Services\MassTransitService.cs"/>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 </Project>
