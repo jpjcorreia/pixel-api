@@ -17,7 +17,7 @@
         </PackageReference>
         <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1"/>
         <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.0-develop.1682"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.2"/>
     </ItemGroup>
     <ItemGroup>
         <Compile Remove="Domain\HttpRequestLogNotification.cs"/>
@@ -35,7 +35,7 @@
     <ItemGroup>
         <Content Remove="Domain\**"/>
         <Content Include="..\..\.dockerignore">
-          <Link>.dockerignore</Link>
+            <Link>.dockerignore</Link>
         </Content>
     </ItemGroup>
     <ItemGroup>

@@ -21,15 +21,15 @@ public class HttpRequestCreatedConsumer : IConsumer<HttpRequestCreated>
     }
 
     /// <summary>
-    /// Asynchronously consumes the HttpRequestCreated message from the message queue.
+    ///     Asynchronously consumes the HttpRequestCreated message from the message queue.
     /// </summary>
     /// <param name="context">The context of the consumed message. This cannot be null.</param>
     /// <exception cref="ValidationException">Thrown when IP address from the HttpRequestCreated message is empty or null.</exception>
     /// <exception cref="ArgumentNullException">Thrown when context is null.</exception>
     /// <returns>A Task that represents the asynchronous operation.</returns>
     /// <remarks>
-    /// If an exception occurs during the operation, it logs the error and rethrows the exception.
-    /// Should be improved to handle the error appropriately (e.g., re-queue the message, move to an error queue, etc.).
+    ///     If an exception occurs during the operation, it logs the error and rethrows the exception.
+    ///     Should be improved to handle the error appropriately (e.g., re-queue the message, move to an error queue, etc.).
     /// </remarks>
     public async Task Consume(ConsumeContext<HttpRequestCreated> context)
     {
@@ -55,6 +55,7 @@ public class HttpRequestCreatedConsumer : IConsumer<HttpRequestCreated>
         {
             // Improve this later to handling the error appropriately (e.g., re-queue the message, move to an error queue, etc.)
             _logger.LogError(ex, "Error storing HttpRequestCreated: {Message}", context.Message);
+
             throw;
         }
     }

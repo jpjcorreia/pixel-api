@@ -37,56 +37,46 @@ var app = builder.Build();
 app.UseExceptionHandler();
 
 app.MapGet(
-        "/Track",
-        async (HttpContext context, IPublishEndpoint endpoint, ILogger<Program> logger) =>
-        {
-            var trackingPixelData = Convert.FromBase64String(
-                "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
-            );
+    "/Track",
+    async (HttpContext context, IPublishEndpoint endpoint, ILogger<Program> logger) =>
+    {
+        if (
+            context.Connection.RemoteIpAddress is null
+            || string.IsNullOrWhiteSpace(context.Connection.RemoteIpAddress.ToString())
+        )
+            return Results.BadRequest("IP Address is required to track the request.");
 
-            var referer = context.Request.GetTypedHeaders().Referer?.ToString();
-            var userAgent = context.Request.Headers.UserAgent.FirstOrDefault();
-            var ipAddress = context.Connection.RemoteIpAddress?.MapToIPv4().ToString();
+        var trackingPixelData = Convert.FromBase64String(
+            "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+        );
 
-            var requestCreatedEvent = new HttpRequestCreated(
-                referer,
-                userAgent,
-                ipAddress,
-                Guid.NewGuid().ToString(),
-                DateTime.UtcNow
-            );
+        var referer = context.Request.GetTypedHeaders().Referer?.ToString();
+        var userAgent = context.Request.Headers.UserAgent.FirstOrDefault();
+        var ipAddress = context.Connection.RemoteIpAddress?.MapToIPv4().ToString();
 
-            logger.LogDebug(
-                "Tracking request received with Id: {Id}, Referer: {Referer}, User-Agent: {UserAgent}, IP Address: {IPAddress}",
-                requestCreatedEvent.Id,
-                requestCreatedEvent.Referer,
-                requestCreatedEvent.UserAgent,
-                requestCreatedEvent.IpAddress
-            );
+        var requestCreatedEvent = new HttpRequestCreated(
+            referer,
+            userAgent,
+            ipAddress,
+            Guid.NewGuid().ToString(),
+            DateTime.UtcNow
+        );
 
-            await endpoint.Publish(requestCreatedEvent);
+        logger.LogDebug(
+            "Tracking request received with Id: {Id}, Referer: {Referer}, User-Agent: {UserAgent}, IP Address: {IPAddress}",
+            requestCreatedEvent.Id,
+            requestCreatedEvent.Referer,
+            requestCreatedEvent.UserAgent,
+            requestCreatedEvent.IpAddress
+        );
 
-            logger.LogInformation(
-                "Published HttpRequestCreated event : {Id}",
-                requestCreatedEvent.Id
-            );
+        await endpoint.Publish(requestCreatedEvent);
 
-            return Results.File(trackingPixelData, "image/gif");
-        }
-    )
-    .AddEndpointFilter(
-        async (context, next) =>
-        {
-            if (context.HttpContext.Connection.RemoteIpAddress is null)
-                return Results.Problem(
-                    "IP Address is required to track the request.",
-                    statusCode: StatusCodes.Status400BadRequest,
-                    title: "Bad Request"
-                );
+        logger.LogInformation("Published HttpRequestCreated event : {Id}", requestCreatedEvent.Id);
 
-            return await next(context);
-        }
-    );
+        return Results.File(trackingPixelData, "image/gif");
+    }
+);
 
 await app.RunAsync();
 

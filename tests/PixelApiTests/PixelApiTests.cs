@@ -1,5 +1,4 @@
 using System.Net;
-using Common;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
