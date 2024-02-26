@@ -26,6 +26,7 @@ public class PixelApiTests
             });
         });
         var client = factory.CreateClient();
+
         // Act
         var response = await client.GetAsync("/Track");
 
@@ -45,6 +46,7 @@ public class PixelApiTests
             });
         });
         var client = factory.CreateClient();
+
         // Act
         var response = await client.GetAsync("/Track");
 

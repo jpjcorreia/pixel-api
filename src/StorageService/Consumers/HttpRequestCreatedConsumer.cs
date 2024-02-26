@@ -31,7 +31,7 @@ public class HttpRequestCreatedConsumer : IConsumer<HttpRequestCreated>
     ///     If an exception occurs during the operation, it logs the error and rethrows the exception.
     ///     Should be improved to handle the error appropriately (e.g., re-queue the message, move to an error queue, etc.).
     /// </remarks>
-    public async Task Consume(ConsumeContext<HttpRequestCreated> context)
+    public Task Consume(ConsumeContext<HttpRequestCreated> context)
     {
         var httpRequestCreated = context.Message;
 
@@ -50,7 +50,7 @@ public class HttpRequestCreatedConsumer : IConsumer<HttpRequestCreated>
             var message = FormatContent(httpRequestCreated);
 
             // Logging the message as a Serilog ILogger implementation to the file avoiding concurrency issues
-            await Task.Run(() => _fileLogger.Information("{Message}", message));
+            _fileLogger.Information("{Message}", message);
 
             _logger.LogInformation("Stored HTTP request {HttpRequestId}", httpRequestCreated.Id);
         }
@@ -61,6 +61,8 @@ public class HttpRequestCreatedConsumer : IConsumer<HttpRequestCreated>
 
             throw;
         }
+
+        return Task.CompletedTask;
     }
 
     private static string FormatContent(HttpRequestCreated content)
