@@ -89,3 +89,5 @@ app.MapGet(
     );
 
 await app.RunAsync();
+
+public partial class Program { }
