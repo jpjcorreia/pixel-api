@@ -21,26 +21,30 @@ public class HttpRequestCreatedConsumer : IConsumer<HttpRequestCreated>
     }
 
     /// <summary>
-    ///     Consumes the HttpRequestCreated message from the message queue.
+    /// Asynchronously consumes the HttpRequestCreated message from the message queue.
     /// </summary>
     /// <param name="context">The context of the consumed message. This cannot be null.</param>
-    /// <exception cref="ArgumentException"></exception>
-    /// <returns>A Task that represents the asynchronous operation.</returns>
+    /// <exception cref="ValidationException">Thrown when IP address from the HttpRequestCreated message is empty or null.</exception>
     /// <exception cref="ArgumentNullException">Thrown when context is null.</exception>
+    /// <returns>A Task that represents the asynchronous operation.</returns>
+    /// <remarks>
+    /// If an exception occurs during the operation, it logs the error and rethrows the exception.
+    /// Should be improved to handle the error appropriately (e.g., re-queue the message, move to an error queue, etc.).
+    /// </remarks>
     public async Task Consume(ConsumeContext<HttpRequestCreated> context)
     {
-        _logger.LogDebug(
-            "Consuming HttpRequestCreated with ID: {HttpRequestId}",
-            context.Message.Id
-        );
+        var httpRequestCreated = context.Message;
+        ArgumentNullException.ThrowIfNull(httpRequestCreated);
+
+        if (string.IsNullOrWhiteSpace(httpRequestCreated.IpAddress))
+            throw new ValidationException("Ip Address cannot be empty or null");
 
         try
         {
-            var httpRequestCreated = context.Message;
-            ArgumentNullException.ThrowIfNull(httpRequestCreated);
-
-            if (string.IsNullOrWhiteSpace(httpRequestCreated.IpAddress))
-                throw new ValidationException("Ip Address cannot be empty or null");
+            _logger.LogDebug(
+                "Consuming HttpRequestCreated with ID: {MessageId}",
+                context.Message.Id
+            );
 
             var message = FormatContent(httpRequestCreated);
             // Logging the message as a Serilog ILogger implementation to the file avoiding concurrency issues
@@ -49,12 +53,9 @@ public class HttpRequestCreatedConsumer : IConsumer<HttpRequestCreated>
         }
         catch (Exception ex)
         {
-            _logger.LogError(
-                ex,
-                "Error storing HttpRequestCreated with ID: {HttpRequestId}",
-                context.Message.Id
-            );
             // Improve this later to handling the error appropriately (e.g., re-queue the message, move to an error queue, etc.)
+            _logger.LogError(ex, "Error storing HttpRequestCreated: {Message}", context.Message);
+            throw;
         }
     }
 
