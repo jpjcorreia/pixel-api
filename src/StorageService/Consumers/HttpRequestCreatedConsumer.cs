@@ -34,6 +34,7 @@ public class HttpRequestCreatedConsumer : IConsumer<HttpRequestCreated>
     public async Task Consume(ConsumeContext<HttpRequestCreated> context)
     {
         var httpRequestCreated = context.Message;
+
         ArgumentNullException.ThrowIfNull(httpRequestCreated);
 
         if (string.IsNullOrWhiteSpace(httpRequestCreated.IpAddress))
@@ -47,8 +48,10 @@ public class HttpRequestCreatedConsumer : IConsumer<HttpRequestCreated>
             );
 
             var message = FormatContent(httpRequestCreated);
+
             // Logging the message as a Serilog ILogger implementation to the file avoiding concurrency issues
             await Task.Run(() => _fileLogger.Information("{Message}", message));
+
             _logger.LogInformation("Stored HTTP request {HttpRequestId}", httpRequestCreated.Id);
         }
         catch (Exception ex)
